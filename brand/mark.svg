@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="256" height="256" role="img" aria-label="Arken Limit Monitor mark">
+  <defs>
+    <linearGradient id="alm-arc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d8f72"/>
+      <stop offset="100%" stop-color="#19c37d"/>
+    </linearGradient>
+  </defs>
+  <circle cx="12" cy="12" r="8" fill="none" stroke="#4b4b4b" stroke-width="2.6"/>
+  <circle cx="12" cy="12" r="8" fill="none" stroke="url(#alm-arc)" stroke-width="2.6"
+          stroke-linecap="round" stroke-dasharray="39.2 50.3"
+          transform="rotate(-90 12 12)"/>
+  <circle cx="12" cy="12" r="2.4" fill="#19c37d"/>
+</svg>

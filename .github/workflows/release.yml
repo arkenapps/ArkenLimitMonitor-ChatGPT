@@ -1,0 +1,70 @@
+name: Package release
+
+# Tag a version and this builds both zips and attaches them to the release:
+#   git tag v1.1.0 && git push origin v1.1.0
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tag must match the manifest version
+        if: github.ref_type == 'tag'
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          MANIFEST=$(node -p "require('./extension/manifest.json').version")
+          echo "tag=$TAG  manifest=$MANIFEST"
+          if [ "$TAG" != "$MANIFEST" ]; then
+            echo "::error::Tag $TAG does not match manifest version $MANIFEST"
+            exit 1
+          fi
+
+      - name: Sanity-check the extension
+        run: |
+          node --check extension/content.js
+          node --check extension/background.js
+          node --check extension/usage-parser.js
+          node -e "JSON.parse(require('fs').readFileSync('extension/manifest.json'))"
+
+      - name: Every icon must be a real PNG
+        run: |
+          for f in extension/icons/*.png; do
+            if ! file -b "$f" | grep -q "^PNG image data"; then
+              echo "::error::$f is not a PNG: $(file -b "$f")"
+              exit 1
+            fi
+          done
+
+      - name: Build ArkenLimitMonitor-ChatGPT-extension.zip  (folder inside, for Load unpacked)
+        run: |
+          mkdir -p build/ArkenLimitMonitor-ChatGPT
+          cp -r extension/. build/ArkenLimitMonitor-ChatGPT/
+          cd build && zip -qr ../ArkenLimitMonitor-ChatGPT-extension.zip ArkenLimitMonitor-ChatGPT
+
+      - name: Build ArkenLimitMonitor-ChatGPT-store-upload.zip  (manifest at root, for the stores)
+        run: |
+          cd extension && zip -qr ../ArkenLimitMonitor-ChatGPT-store-upload.zip .
+
+      - name: Attach to the release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ArkenLimitMonitor-ChatGPT-extension.zip
+            ArkenLimitMonitor-ChatGPT-store-upload.zip
+          generate_release_notes: true
+
+      - name: Upload as build artifacts (manual runs)
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArkenLimitMonitor-ChatGPT-zips
+          path: "*.zip"

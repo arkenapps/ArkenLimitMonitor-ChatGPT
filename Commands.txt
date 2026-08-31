@@ -1,0 +1,123 @@
+ARKEN LIMIT MONITOR - CHATGPT EDITION
+Upload to GitHub - copy/paste, one line at a time.
+
+Assumes you extracted this folder to:
+  E:\Extensions_Projects_2026\UPdated\for_GitHub_Only\ArkenLimitMonitor-ChatGPT
+
+If you put it somewhere else, change the cd line below to YOUR real path.
+There is no "path\to" placeholder anywhere in this file - every line runs as-is.
+
+
+-------------------------------------------------------------------
+STEP 0 - open the folder
+-------------------------------------------------------------------
+
+cd /d E:\Extensions_Projects_2026\UPdated\for_GitHub_Only\ArkenLimitMonitor-ChatGPT
+
+Check you are in the right place - this must list README.md and extension:
+
+dir
+
+
+-------------------------------------------------------------------
+STEP 1 - first commit
+-------------------------------------------------------------------
+
+git init -b main
+
+git add -A
+
+git commit -m "Arken Limit Monitor - Usage Meter for ChatGPT v1.1.0"
+
+
+-------------------------------------------------------------------
+STEP 2 - create the repo and push
+-------------------------------------------------------------------
+
+gh repo create arkenapps/ArkenLimitMonitor-ChatGPT --public --source=. --remote=origin --push
+
+
+-------------------------------------------------------------------
+STEP 3 - description, homepage, topics
+-------------------------------------------------------------------
+
+gh repo edit --description "Unofficial browser widget showing your own ChatGPT usage limits - 5-hour, weekly, resets and credits - with countdowns and threshold alerts. Local-only, consent-gated, MIT."
+
+gh repo edit --homepage "https://arkenapps.github.io/ArkenLimitMonitor-ChatGPT/"
+
+gh repo edit --add-topic chrome-extension --add-topic edge-extension --add-topic browser-extension --add-topic manifest-v3 --add-topic chatgpt --add-topic openai --add-topic codex --add-topic usage-tracker --add-topic productivity --add-topic javascript --add-topic privacy-friendly --add-topic open-source --add-topic developer-tools --add-topic chromium
+
+
+-------------------------------------------------------------------
+STEP 4 - turn on GitHub Pages (serves the /docs website)
+-------------------------------------------------------------------
+
+gh api -X POST repos/arkenapps/ArkenLimitMonitor-ChatGPT/pages -f "source[branch]=main" -f "source[path]=/docs"
+
+Site goes live in a minute or two at:
+  https://arkenapps.github.io/ArkenLimitMonitor-ChatGPT/
+
+
+-------------------------------------------------------------------
+STEP 5 - cut the release
+-------------------------------------------------------------------
+
+The workflow in .github/workflows/release.yml builds BOTH zips for you
+and attaches them. You do not build or upload any zip by hand.
+
+git tag v1.1.0
+
+git push origin v1.1.0
+
+Watch it run:
+
+gh run watch
+
+When it finishes, confirm both zips are attached:
+
+gh release view v1.1.0
+
+
+-------------------------------------------------------------------
+IF SOMETHING GOES WRONG
+-------------------------------------------------------------------
+
+Tag pushed with the wrong version - delete it both places, then re-tag:
+
+git tag -d v1.1.0
+git push origin :refs/tags/v1.1.0
+
+Repo name already taken - pick another and reuse it everywhere:
+
+gh repo create arkenapps/ArkenLimitMonitorChatGPT --public --source=. --remote=origin --push
+
+Wrong remote attached - remove and redo step 2:
+
+git remote remove origin
+
+Workflow failed on "Tag must match the manifest version" - the tag and
+extension/manifest.json disagree. Check the manifest version:
+
+node -p "require('./extension/manifest.json').version"
+
+
+-------------------------------------------------------------------
+NEVER COMMIT ZIPS
+-------------------------------------------------------------------
+
+.gitignore already has *.zip. Zips belong on Releases only, built by
+the workflow. If you ever see a .zip in "git status", do not add it.
+
+
+-------------------------------------------------------------------
+LATER - shipping an update
+-------------------------------------------------------------------
+
+1. Edit files under extension\
+2. Bump "version" in extension\manifest.json AND the VERSION constant
+   at the top of extension\content.js - keep them identical
+3. git add -A
+4. git commit -m "v1.1.1 - what changed"
+5. git push
+6. git tag v1.1.1
+7. git push origin v1.1.1

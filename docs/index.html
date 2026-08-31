@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arken Limit Monitor — Unofficial ChatGPT usage widget</title>
+<meta name="description" content="A quiet browser widget that shows your own ChatGPT usage limits with reset countdowns and threshold alerts. Local, open-source, no account. Not affiliated with OpenAI.">
+<link rel="canonical" href="https://arkenapps.github.io/ArkenLimitMonitor-ChatGPT/">
+<link rel="icon" type="image/png" sizes="256x256" href="assets/mark-256.png">
+<link rel="apple-touch-icon" href="assets/icon-512.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkenapps.github.io/ArkenLimitMonitor-ChatGPT/">
+<meta property="og:title" content="Arken Limit Monitor — Unofficial ChatGPT usage widget">
+<meta property="og:description" content="See your 5-hour & weekly ChatGPT limits before you hit the wall. Local, open-source, no account.">
+<meta property="og:image" content="https://arkenapps.github.io/ArkenLimitMonitor-ChatGPT/assets/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Arken Limit Monitor — Unofficial ChatGPT usage widget">
+<meta name="twitter:description" content="See your 5-hour & weekly ChatGPT limits before you hit the wall. Local, open-source, no account.">
+<meta name="twitter:image" content="https://arkenapps.github.io/ArkenLimitMonitor-ChatGPT/assets/og-card.png">
+<style>
+  :root{
+    --teal:#0d8f72; --teal-bright:#19c37d; --amber:#e0a94a; --red:#e5564d;
+    --bg:#080b0a; --panel:#111917; --panel2:#0d1413; --line:#1d2a26;
+    --text:#eef3f1; --muted:#8fa09a;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:radial-gradient(1200px 600px at 70% -10%, #12241d 0%, var(--bg) 55%);
+    color:var(--text); font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:940px; margin:0 auto; padding:0 22px}
+  a{color:var(--teal-bright); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .tag{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--teal-bright); font-weight:700}
+
+  header{padding:64px 0 30px; text-align:center}
+  .logo-mark{width:56px;height:56px;margin:0 auto 18px;display:block}
+  h1{font-size:40px; line-height:1.1; margin:12px 0 8px; letter-spacing:-.5px}
+  .sub{color:var(--muted); font-size:16px; max-width:580px; margin:0 auto 6px}
+  .unofficial{display:inline-block; margin-top:14px; font-size:12px; color:var(--muted);
+    border:1px solid var(--line); border-radius:999px; padding:5px 13px}
+  .cta{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:26px}
+  .btn{background:var(--teal-bright); color:#04191b; font-weight:700; padding:11px 20px; border-radius:11px; font-size:14px}
+  .btn.alt{background:transparent; color:var(--text); border:1px solid var(--line)}
+  .btn:hover{text-decoration:none; filter:brightness(1.06)}
+  .btn.gold{background:var(--amber); color:#0b1417}
+
+  .gallery{display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); align-items:start}
+  .gallery figure{margin:0}
+  .gallery img{width:100%; display:block; border:1px solid var(--line); border-radius:14px;
+    box-shadow:0 18px 44px rgba(0,0,0,.45)}
+  .gallery figcaption{color:var(--muted); font-size:13px; margin-top:9px; text-align:center}
+  .shot{margin:40px auto 10px; max-width:330px; display:block; filter:drop-shadow(0 24px 60px rgba(0,0,0,.6)); border-radius:14px}
+
+  section{padding:46px 0; border-top:1px solid var(--line)}
+  h2{font-size:24px; margin:0 0 6px; letter-spacing:-.3px}
+  .lead{color:var(--muted); margin:0 0 26px}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px}
+  .card h3{margin:0 0 6px; font-size:15px}
+  .card p{margin:0; color:var(--muted); font-size:13.5px}
+
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0}
+  ol.steps li{position:relative; padding:12px 0 12px 44px; border-bottom:1px solid var(--line)}
+  ol.steps li:last-child{border-bottom:0}
+  ol.steps li::before{counter-increment:s; content:counter(s); position:absolute; left:0; top:11px;
+    width:28px;height:28px;border-radius:8px;background:var(--panel);border:1px solid var(--line);
+    color:var(--teal-bright);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+  code{background:#0c1211;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12.5px;color:#cbd6d2}
+
+  .privacy{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .privacy p{margin:0 0 10px;color:#aab6b2;font-size:14px}
+  .privacy p:last-child{margin:0}
+
+  .note{font-size:13px;color:var(--amber);background:rgba(224,169,74,.08);
+    border:1px solid rgba(224,169,74,.28);border-radius:10px;padding:11px 14px;margin:18px 0 0}
+
+  .donate-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px}
+  .coin{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; display:flex; gap:14px; align-items:center}
+  .coin img{width:88px;height:88px;border-radius:8px;background:#fff;padding:5px;flex:none}
+  .coin .meta{min-width:0}
+  .coin .name{font-weight:700;font-size:14px;margin-bottom:3px}
+  .coin .net{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+  .coin .addr{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#c3d0cc;
+    word-break:break-all;background:#0c1211;border:1px solid var(--line);border-radius:7px;padding:6px 8px}
+  .fiat{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px;max-width:420px}
+  .fiat .coin img{width:104px;height:104px}
+  .warn{font-size:12.5px;color:var(--amber);background:rgba(224,169,74,.08);border:1px solid rgba(224,169,74,.3);
+    border-radius:10px;padding:10px 13px;margin-top:18px}
+
+  .addrrow{display:flex;gap:8px;align-items:stretch}
+  .addrrow .addr{flex:1}
+  .copy{background:#0c1211;border:1px solid var(--line);color:var(--muted);border-radius:7px;
+    font-size:11px;padding:0 10px;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .copy:hover{border-color:var(--teal-bright);color:var(--teal-bright)}
+  .copy.done{border-color:var(--teal-bright);color:var(--teal-bright)}
+  .faq{display:grid;gap:12px}
+  .faq details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .faq summary{cursor:pointer;font-weight:600;font-size:14.5px;list-style:none}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::before{content:"+";color:var(--teal-bright);font-weight:700;margin-right:10px}
+  .faq details[open] summary::before{content:"\2013"}
+  .faq p{margin:10px 0 0;color:var(--muted);font-size:13.5px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .chip{border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-size:12px; color:var(--muted)}
+  footer{padding:40px 0 60px;text-align:center;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
+  footer p{margin:5px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img class="logo-mark" src="assets/mark-256.png" alt="Arken Limit Monitor logo">
+    <div class="tag">Arken Apps</div>
+    <h1>Arken Limit Monitor</h1>
+    <p class="sub">A quiet ring gauge that shows your own ChatGPT usage — the 5-hour and weekly windows — with reset countdowns and a heads-up before you hit the wall.</p>
+    <span class="unofficial">Unofficial community tool · not affiliated with OpenAI</span>
+    <div class="cta">
+      <a class="btn" href="https://github.com/arkenapps/ArkenLimitMonitor-ChatGPT/releases/latest/download/ArkenLimitMonitor-ChatGPT-extension.zip">Download extension</a>
+      <a class="btn gold" href="https://arkenapps.com/arken-limit-monitor-chatgpt">Download from arkenapps.com</a>
+      <a class="btn alt" href="https://github.com/arkenapps/ArkenLimitMonitor-ChatGPT">View on GitHub</a>
+      <a class="btn alt" href="#donate">Support</a>
+    </div>
+    <img class="shot" src="assets/shots/01-widget.png" alt="Arken Limit Monitor widget showing the 5-hour ring, weekly limit, reset availability and credit balance">
+  </header>
+
+  <section id="features">
+    <div class="tag">What it does</div>
+    <h2>Know your runway at a glance</h2>
+    <p class="lead">Reads only your own usage numbers, right on the page, so you never dig through settings.</p>
+    <div class="grid">
+      <div class="card"><h3>Ring gauge</h3><p>Your current 5-hour window front and centre, with the weekly window on the row beneath it.</p></div>
+      <div class="card"><h3>Reset countdowns</h3><p>Live “resets in 1h 36m” timers so you know exactly when your window refreshes.</p></div>
+      <div class="card"><h3>Usage resets</h3><p>How many full resets you have available, and the date they expire.</p></div>
+      <div class="card"><h3>Threshold alerts</h3><p>An optional desktop notification when you cross a level you set, so you can wrap up cleanly.</p></div>
+      <div class="card"><h3>Docks and folds</h3><p>Collapses to a pill flush with the bottom edge of the window. Drag it anywhere; the card expands upward.</p></div>
+      <div class="card"><h3>Local &amp; private</h3><p>Runs entirely in your browser. No account, no external server, no conversation access.</p></div>
+    </div>
+    <p class="note">These figures can relate to Codex or other usage shown on ChatGPT's Usage page. They are not necessarily ordinary ChatGPT conversation-message limits.</p>
+  </section>
+
+  <section id="screenshots">
+    <div class="tag">Screenshots</div>
+    <h2>What it looks like in use</h2>
+    <p class="lead">Docked in the corner of the page you're already working on.</p>
+    <div class="gallery">
+      <figure>
+        <img src="assets/shots/02-settings.png" alt="The settings panel with refresh interval, alert threshold and toggles">
+        <figcaption>Settings — refresh interval, alert threshold, and one button to stop and erase everything</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/shots/03-about.png" alt="The About panel stating what is read and what is never touched">
+        <figcaption>The About panel spells out exactly what is read and what is never touched</figcaption>
+      </figure>
+    </div>
+    <figure style="margin:22px 0 0">
+      <img src="assets/shots/04-pill.png" alt="The collapsed pill showing 5-hour and weekly percentages" style="width:100%;max-width:420px;display:block;margin:0 auto;border:1px solid var(--line);border-radius:12px">
+      <figcaption style="color:var(--muted);font-size:13px;margin-top:9px;text-align:center">One click folds it into a pill docked at the bottom edge — drag it anywhere</figcaption>
+    </figure>
+  </section>
+
+  <section id="install">
+    <div class="tag">Setup</div>
+    <h2>Install in a minute</h2>
+    <p class="lead">Works on Chrome, Edge, Brave and other Chromium browsers — Windows, macOS and Linux.</p>
+    <ol class="steps">
+      <li>Download <strong>ArkenLimitMonitor-ChatGPT-extension.zip</strong> from the <a href="https://github.com/arkenapps/ArkenLimitMonitor-ChatGPT/releases/latest">latest release</a> or from <a href="https://arkenapps.com/arken-limit-monitor-chatgpt">arkenapps.com</a>, and <strong>unzip</strong> it.</li>
+      <li>Open <code>chrome://extensions</code> (or <code>edge://extensions</code>).</li>
+      <li>Turn on <strong>Developer mode</strong> (top-right).</li>
+      <li>Click <strong>Load unpacked</strong> and select the unzipped <code>ArkenLimitMonitor-ChatGPT</code> folder.</li>
+      <li>Open or refresh <strong>chatgpt.com</strong>, then press <strong>Allow automatic monitoring</strong> when the widget asks.</li>
+    </ol>
+  </section>
+
+  <section id="privacy">
+    <div class="tag">Privacy</div>
+    <h2>Your data stays yours</h2>
+    <div class="privacy">
+      <p>This extension runs <strong>locally</strong> in your browser. It does not collect, sell, transmit or store your ChatGPT account data on any external server. There is no telemetry of any kind.</p>
+      <p>Nothing is requested until you press <strong>Allow automatic monitoring</strong>. It reads a short-lived ChatGPT session access token into memory only, uses it solely for approved read-only usage requests, and never stores, logs, exports or transmits that token anywhere.</p>
+      <p>The request allowlist is enforced in code — the token is only ever attached to the specific usage and reset-credit endpoints, and to nothing else. It does not read your conversations, and it does not send usage data to ArkenApps or any third party.</p>
+      <p>Normalised usage percentages, reset times, your optional credit balance, your settings and notification state are stored locally in this browser. <strong>Stop monitoring &amp; delete local data</strong> in settings withdraws consent and clears all of it.</p>
+      <p><em>Experimental:</em> ChatGPT's internal usage endpoints may change, which can temporarily affect the extension until it is updated.</p>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="tag">Questions</div>
+    <h2>The things people ask first</h2>
+    <div class="faq">
+      <details><summary>Does it read my conversations?</summary>
+        <p>No. It requests a small set of usage endpoints — the same figures ChatGPT's own Usage page shows you — and renders them. Nothing else on the page is read, stored or sent anywhere.</p></details>
+      <details><summary>Do I have to give it my password or an API key?</summary>
+        <p>No. It uses the browser session you are already signed into. There is no login step and no token for you to paste.</p></details>
+      <details><summary>Why does it ask permission before it starts?</summary>
+        <p>Because it reads a session access token to make those requests, and you should decide that, not us. Nothing happens until you allow it, and one button in settings withdraws consent and erases everything stored locally.</p></details>
+      <details><summary>Are these my chat message limits?</summary>
+        <p>Not necessarily. The figures come from ChatGPT's usage endpoints and can relate to Codex or other usage shown on the Usage page rather than ordinary conversation messages.</p></details>
+      <details><summary>Will it break?</summary>
+        <p>Possibly. It depends on endpoints OpenAI does not document, so a change on their side can stop it working until it is patched. It fails quietly and shows the last known numbers rather than breaking the page.</p></details>
+      <details><summary>Is it affiliated with OpenAI?</summary>
+        <p>No. It is an independent community tool. “ChatGPT”, “Codex” and “OpenAI” are trademarks of OpenAI and are used here only to describe what the extension is compatible with.</p></details>
+    </div>
+    <div class="chips">
+      <span class="chip">MIT licensed</span><span class="chip">No telemetry</span>
+      <span class="chip">No account</span><span class="chip">Consent-gated</span>
+      <span class="chip">Chrome · Edge · Brave · Arc · Vivaldi</span>
+    </div>
+  </section>
+
+  <section id="donate">
+    <div class="tag">Support</div>
+    <h2>Buy me a coffee ☕</h2>
+    <p class="lead">Free and open source. If it saves you from a mid-task cutoff, a small tip keeps it maintained. No nags, no locked features.</p>
+
+    <div class="fiat">
+      <div class="coin" style="align-items:center;justify-content:center;padding:26px 18px">
+        <div class="meta" style="text-align:center">
+          <div class="name">Buy Me a Coffee</div>
+          <div class="net">Card &middot; Apple Pay &middot; Google Pay</div>
+          <a class="btn" style="display:inline-block;margin-top:10px" href="https://buymeacoffee.com/arkenstone">buymeacoffee.com/arkenstone</a>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin:22px 0 12px;font-size:15px;color:var(--muted)">Crypto</h3>
+    <div class="donate-grid">
+      <div class="coin"><img src="assets/qr/btc.png" alt="Bitcoin QR"><div class="meta"><div class="name">Bitcoin</div><div class="net">BTC</div><div class="addrrow"><div class="addr">bc1q38s0238vt0qmy20e67v8yh563gd569detagr04</div><button class="copy" data-copy="bc1q38s0238vt0qmy20e67v8yh563gd569detagr04">Copy</button></div></div></div>
+      <div class="coin"><img src="assets/qr/eth.png" alt="Ethereum QR"><div class="meta"><div class="name">Ethereum</div><div class="net">ETH · ERC-20</div><div class="addrrow"><div class="addr">0x3Ee64cde0220D32998B442caADdDF8384309befc</div><button class="copy" data-copy="0x3Ee64cde0220D32998B442caADdDF8384309befc">Copy</button></div></div></div>
+      <div class="coin"><img src="assets/qr/bnb.png" alt="BNB QR"><div class="meta"><div class="name">BNB</div><div class="net">BEP-20</div><div class="addrrow"><div class="addr">0x3Ee64cde0220D32998B442caADdDF8384309befc</div><button class="copy" data-copy="0x3Ee64cde0220D32998B442caADdDF8384309befc">Copy</button></div></div></div>
+      <div class="coin"><img src="assets/qr/usdt.png" alt="USDT QR"><div class="meta"><div class="name">USDT</div><div class="net">Tether · TRC-20</div><div class="addrrow"><div class="addr">TKabLe5AuCATij3u1zx116W5zHLb6eD5Um</div><button class="copy" data-copy="TKabLe5AuCATij3u1zx116W5zHLb6eD5Um">Copy</button></div></div></div>
+      <div class="coin"><img src="assets/qr/usdc.png" alt="USDC QR"><div class="meta"><div class="name">USDC</div><div class="net">Solana · SPL</div><div class="addrrow"><div class="addr">9v64bkPMaM1KFFGGe83U7Mv3mBWTGW29qz4hXE9DNL2v</div><button class="copy" data-copy="9v64bkPMaM1KFFGGe83U7Mv3mBWTGW29qz4hXE9DNL2v">Copy</button></div></div></div>
+      <div class="coin"><img src="assets/qr/sol.png" alt="Solana QR"><div class="meta"><div class="name">Solana</div><div class="net">SOL</div><div class="addrrow"><div class="addr">9v64bkPMaM1KFFGGe83U7Mv3mBWTGW29qz4hXE9DNL2v</div><button class="copy" data-copy="9v64bkPMaM1KFFGGe83U7Mv3mBWTGW29qz4hXE9DNL2v">Copy</button></div></div></div>
+      <div class="coin"><img src="assets/qr/xrp.png" alt="XRP QR"><div class="meta"><div class="name">Ripple</div><div class="net">XRP</div><div class="addrrow"><div class="addr">r4RKyUK5sJfFrjXBFjYuwpJ2rnerPdDDpW</div><button class="copy" data-copy="r4RKyUK5sJfFrjXBFjYuwpJ2rnerPdDDpW">Copy</button></div></div></div>
+    </div>
+    <p class="warn">Always confirm the network and address in your own wallet before sending. Crypto transfers can’t be reversed.</p>
+  </section>
+
+  <footer>
+    <p>Arken Limit Monitor · an <a href="https://github.com/arkenapps">Arken Apps</a> project · MIT licensed</p>
+    <p>Using Claude too? See the <a href="https://github.com/arkenapps/ArkenLimitMonitor">Claude edition</a>.</p>
+    <p>Not affiliated with, endorsed by, or sponsored by OpenAI. “ChatGPT”, “Codex” and “OpenAI” are trademarks of OpenAI, used here only to describe compatibility.</p>
+  </footer>
+
+</div>
+<script>
+document.addEventListener("click", function (e) {
+  var b = e.target.closest(".copy");
+  if (!b) return;
+  navigator.clipboard.writeText(b.dataset.copy).then(function () {
+    var old = b.textContent;
+    b.textContent = "Copied";
+    b.classList.add("done");
+    setTimeout(function () { b.textContent = old; b.classList.remove("done"); }, 1600);
+  });
+});
+</script>
+</body>
+</html>

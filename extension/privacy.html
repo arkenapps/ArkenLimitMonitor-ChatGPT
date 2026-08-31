@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Privacy Policy — Arken Limit Monitor</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; background:#212121; color:#ececec; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(circle at 75% 0,rgba(16,163,127,.14),transparent 34rem),#212121; }
+    main { width:min(860px,calc(100% - 32px)); margin:0 auto; padding:56px 0 80px; }
+    header { padding-bottom:28px; border-bottom:1px solid #424242; }
+    .brand { display:flex; align-items:center; gap:12px; color:#fff; font-size:15px; font-weight:750; }
+    .mark { width:30px; height:30px; display:grid; place-items:center; border:3px solid #4b4b4b; border-top-color:#19c37d; border-radius:50%; color:#19c37d; font-size:11px; }
+    h1 { margin:28px 0 8px; font-size:clamp(32px,6vw,52px); letter-spacing:-.035em; }
+    h2 { margin:34px 0 10px; color:#fff; font-size:19px; }
+    p,li { color:#c8c8c8; font-size:15px; line-height:1.68; }
+    a { color:#19c37d; }
+    .meta,.note { color:#9b9b9b; }
+    .summary { margin-top:24px; padding:18px 20px; border:1px solid rgba(25,195,125,.35); border-radius:14px; background:rgba(16,163,127,.08); }
+    code { color:#d8fff0; }
+    footer { margin-top:42px; padding-top:22px; border-top:1px solid #424242; color:#9b9b9b; font-size:13px; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><span class="mark">●</span>Arken Limit Monitor</div>
+    <h1>Privacy Policy</h1>
+    <p class="meta">Effective and last updated: August 27, 2026 · Version 1.1</p>
+    <p class="summary"><strong>Plain-language summary:</strong> the extension runs locally, performs read-only requests to ChatGPT after your consent, never stores your access token, never reads conversations, and does not send usage data to ArkenApps or third parties.</p>
+  </header>
+
+  <h2>1. Who this policy covers</h2>
+  <p>This policy covers Arken Limit Monitor — Usage Meter for ChatGPT (the “Extension”), published by ArkenApps. The Extension is unofficial and is not affiliated with, endorsed by, or sponsored by OpenAI. “ChatGPT” and “Codex” are used only to describe compatibility.</p>
+
+  <h2>2. What the Extension does</h2>
+  <p>After you give consent, the Extension shows usage limits, remaining percentages, reset times, optional reset-credit availability, credit balance, spend-control information, and local alerts using data made available to your signed-in browser by ChatGPT. Requests are GET-only and are sent only to <code>https://chatgpt.com</code>.</p>
+
+  <h2>3. Data accessed</h2>
+  <ul>
+    <li>A short-lived ChatGPT access token and the current ChatGPT account identifier. These values are read into memory only to authenticate a usage request to ChatGPT.</li>
+    <li>Usage percentages, limit windows, reset timestamps, plan type, and—when available—reset-credit, credit-balance, and spend-control values returned by ChatGPT.</li>
+    <li>Extension settings such as refresh interval, alert threshold, display preferences, notification state, widget position, and consent version.</li>
+  </ul>
+
+  <h2>4. Data the Extension does not access</h2>
+  <p>The Extension does not read or collect your prompts, conversations, responses, passwords, payment-card details, files, address book, browsing history, or cookies. It does not use analytics, advertising trackers, fingerprinting, or remote code.</p>
+
+  <h2>5. Credential handling</h2>
+  <p>The ChatGPT access token and account identifier are used only during the current in-memory refresh operation. They are not written to browser storage, logged, copied to the clipboard, included in debug output, transmitted to ArkenApps, or shared with any third party. A fresh session value is requested when another usage refresh needs authentication.</p>
+
+  <h2>6. Local storage and retention</h2>
+  <p>The Extension stores normalized usage results, the last successful refresh time, the selected working usage endpoint, notification-suppression state, consent state, and user settings in the browser’s extension-local storage. This lets the widget restore its state and show the last update while offline. Local data remains until you use <strong>Settings → Stop monitoring &amp; delete local data</strong>, clear extension data in the browser, or uninstall the Extension.</p>
+
+  <h2>7. Sharing and transfers</h2>
+  <p>ArkenApps does not receive, sell, rent, disclose, or use the data handled by the Extension. The Extension sends authentication and usage requests only to ChatGPT on your behalf. Donation and support links open only when you choose them and are governed by the destination site’s own privacy policy.</p>
+
+  <h2>8. Limited use</h2>
+  <p>Access to user data is limited to providing and improving the user-facing usage-monitoring feature described in the store listing. Data is not used for advertising, creditworthiness, lending, surveillance, or unrelated profiling, and is not made available to humans except when required for security, legal compliance, or user-requested support with the user’s permission.</p>
+
+  <h2>9. Browser permissions</h2>
+  <ul>
+    <li><strong>chatgpt.com host access:</strong> injects the widget and performs read-only ChatGPT session and usage requests after consent.</li>
+    <li><strong>Storage:</strong> saves consent, settings, normalized last-known usage, and notification state locally.</li>
+    <li><strong>Notifications:</strong> optionally displays a local operating-system alert when usage reaches the user’s threshold.</li>
+  </ul>
+
+  <h2>10. Security and service changes</h2>
+  <p>The Extension uses a fixed allowlist of ChatGPT usage endpoints, GET-only network methods, and no remotely hosted executable code. ChatGPT’s internal endpoints may change without notice, which can temporarily affect functionality. No method of software storage or transmission is guaranteed to be completely secure.</p>
+
+  <h2>11. Your choices</h2>
+  <p>Monitoring is off until you affirmatively allow it. You can hide the widget, disable notifications, change the refresh interval, or withdraw consent and delete locally stored Extension data at any time from Settings. You may continue using ChatGPT without enabling the Extension.</p>
+
+  <h2>12. Changes to this policy</h2>
+  <p>If data practices materially change, the Extension will update this policy and request consent again when appropriate. The effective date at the top identifies the current version.</p>
+
+  <h2>13. Contact</h2>
+  <p>Questions or privacy requests: <a href="https://arkenapps.com/arken-limit-monitor.html" target="_blank" rel="noopener noreferrer">ArkenApps support page</a>.</p>
+
+  <footer>© 2026 ArkenApps · This copy is packaged inside the Extension so it remains available offline.</footer>
+</main>
+</body>
+</html>
