@@ -26,7 +26,7 @@
 <p align="center">
   <a href="https://github.com/arkenapps/ArkenLimitMonitor-ChatGPT/releases/latest/download/ArkenLimitMonitor-ChatGPT-extension.zip"><img alt="Download from GitHub" src="https://img.shields.io/badge/Download-from%20GitHub%20release-19c37d?style=for-the-badge"></a>
   &nbsp;
-  <a href="https://arkenapps.com/arken-limit-monitor-chatgpt"><img alt="Download from arkenapps.com" src="https://img.shields.io/badge/Download-from%20arkenapps.com-e0a94a?style=for-the-badge"></a>
+  <a href="https://arkenapps.com/limit-monitor"><img alt="Download from arkenapps.com" src="https://img.shields.io/badge/Download-from%20arkenapps.com-e0a94a?style=for-the-badge"></a>
   &nbsp;
   <a href="https://arkenapps.github.io/ArkenLimitMonitor-ChatGPT/"><img alt="Website" src="https://img.shields.io/badge/Docs%20%26%20donate-website-1b2430?style=for-the-badge"></a>
 </p>
